@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Lost Keep - Campaign Prototype</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">♜</div>
+          <div>
+            <h1>The Lost Keep</h1>
+            <span>Session 1</span>
+          </div>
+        </div>
+
+        <nav class="main-nav" aria-label="Campaign tools">
+          <button class="nav-item active" data-view="world"><span>✥</span>World Map</button>
+          <button class="nav-item" data-view="maps"><span>M</span>Maps</button>
+          <button class="nav-item" data-view="dungeons"><span>Q</span>Quests</button>
+          <button class="nav-item" data-view="party"><span>♙</span>Party</button>
+          <button class="nav-item" data-view="tools"><span>D</span>AI DM</button>
+        </nav>
+
+        <button class="settings-button"><span>⚙</span>Campaign Settings</button>
+      </aside>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-expanded="true" aria-label="Collapse left panel">‹</button>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div class="tabs" role="tablist" aria-label="Campaign sections">
+            <button class="tab active" data-section="world">World</button>
+            <button class="tab" data-section="maps">Maps</button>
+            <button class="tab" data-section="lore">Lore</button>
+            <button class="tab" data-section="quests">Quests</button>
+            <button class="tab" data-section="party">Party</button>
+            <button class="tab" data-section="npcs">NPCs</button>
+            <button class="tab" data-section="notes">Notes</button>
+            <button class="tab" data-section="scene">Current Scene</button>
+          </div>
+          <div class="session-status" aria-label="Session status">
+            <span>Day 3</span>
+            <span>Dusk</span>
+            <span id="sessionDanger">Medium Danger</span>
+            <button class="edit-toggle" id="editModeToggle" aria-pressed="false">Edit</button>
+          </div>
+        </header>
+
+        <section class="content-grid">
+          <section class="map-frame panel">
+            <canvas id="mapCanvas" aria-label="Fantasy world map"></canvas>
+            <div class="map-overlay" id="mapOverlay">
+              <button class="map-control zoom-in" title="Zoom in">+</button>
+              <button class="map-control zoom-out" title="Zoom out">−</button>
+              <button class="map-control focus" title="Focus selected">◇</button>
+              <button class="map-control layers" title="Map layers">✥</button>
+
+              <div class="compass" aria-hidden="true">
+                <span>N</span>
+                <div></div>
+              </div>
+
+              <div class="region-label north">The Shattered North</div>
+              <div class="region-label sea">The Silver Sea</div>
+              <div class="region-label forest">Eldermark Forest</div>
+              <div class="region-label coast">The Broken Coast</div>
+              <div class="region-label sands">The Endless Sands</div>
+              <div class="region-label bay">Blackwater Bay</div>
+
+              <div class="map-route route-north"></div>
+              <div class="map-route route-south"></div>
+              <div class="map-route route-coast"></div>
+              <div class="map-river river-west"></div>
+              <div class="map-river river-east"></div>
+              <div class="territory-glow glow-forest"></div>
+              <div class="territory-glow glow-sands"></div>
+              <div class="territory-glow glow-storm"></div>
+
+              <button class="map-marker selected" style="left: 61%; top: 27%" data-location="concord">
+                <span class="crest">♞</span>
+                <strong>Concord</strong>
+              </button>
+              <button class="map-marker" style="left: 65%; top: 30%" data-location="oak-town">
+                <span>◆</span>
+                <strong>Oak Town</strong>
+              </button>
+              <button class="map-marker" style="left: 57%; top: 40%" data-location="thorn-point">
+                <span>●</span>
+                <strong>Thorn Point</strong>
+              </button>
+              <button class="map-marker" style="left: 63%; top: 44%" data-location="threshwood">
+                <span>●</span>
+                <strong>Threshwood</strong>
+              </button>
+              <button class="map-marker" style="left: 79%; top: 35%" data-location="blacktin-hall">
+                <span>●</span>
+                <strong>Blacktin Hall</strong>
+              </button>
+              <button class="map-marker" style="left: 77%; top: 59%" data-location="high-port">
+                <span>●</span>
+                <strong>High Port</strong>
+              </button>
+              <button class="map-marker" style="left: 47%; top: 70%" data-location="necromouth">
+                <span>●</span>
+                <strong>Necromouth</strong>
+              </button>
+              <button class="map-marker" style="left: 30%; top: 87%" data-location="horizon">
+                <span>●</span>
+                <strong>Horizon</strong>
+              </button>
+
+              <article class="location-popover hidden" id="locationPopover">
+                <div class="popover-image" id="popoverImage"></div>
+                <div>
+                  <h2 id="popoverTitle">Concord</h2>
+                  <p class="type" id="popoverType">Woodland Capital</p>
+                  <p id="popoverDescription">A fortified town near Queen's Wood, watched by guilds, rangers, and old forest powers.</p>
+                </div>
+                <dl>
+                  <div><dt>Population</dt><dd id="popoverPopulation">4,800</dd></div>
+                  <div><dt>Government</dt><dd id="popoverGovernment">Crown Charter</dd></div>
+                  <div><dt>Notable</dt><dd id="popoverNotable">Queen's Road Gate</dd></div>
+                  <div><dt>Danger</dt><dd id="popoverDanger">Medium</dd></div>
+                  <div><dt>Faction</dt><dd id="popoverFaction">Stone Guard</dd></div>
+                  <div><dt>Rumor</dt><dd id="popoverRumor">Missing miners</dd></div>
+                </dl>
+                <button class="primary-button" id="viewLocationButton">View Location</button>
+              </article>
+
+              <section class="town-map hidden" id="townMap">
+                <div class="town-map-header">
+                  <button class="map-back-button" id="backToWorld">‹ World Map</button>
+                  <div>
+                    <h2 id="townMapName">Concord</h2>
+                    <p id="townMapSubtitle">Woodland Capital</p>
+                  </div>
+                </div>
+                <div class="town-illustration" id="townIllustration">
+                  <button class="town-node keep-node" data-town-node="0"><span></span><strong>Gate</strong></button>
+                  <button class="town-node tavern-node" data-town-node="1"><span></span><strong>Tavern</strong></button>
+                  <button class="town-node market-node" data-town-node="2"><span></span><strong>Market</strong></button>
+                  <button class="town-node mill-node" data-town-node="3"><span></span><strong>Mill</strong></button>
+                  <button class="town-node shrine-node" data-town-node="4"><span></span><strong>Shrine</strong></button>
+                </div>
+                <section class="building-map hidden" id="buildingMap">
+                  <div class="building-map-header">
+                    <button class="map-back-button" id="backToTown">‹ Town Map</button>
+                    <div>
+                      <h2 id="buildingMapName">Building</h2>
+                      <p id="buildingMapType">Location</p>
+                    </div>
+                  </div>
+                  <div class="building-plan" id="buildingPlan">
+                    <button class="room-node room-entry" data-room="Entry">Entry</button>
+                    <button class="room-node room-main" data-room="Main Hall">Main Hall</button>
+                    <button class="room-node room-private" data-room="Private Room">Private</button>
+                    <button class="room-node room-storage" data-room="Storage">Storage</button>
+                    <button class="room-node room-secret" data-room="Hidden Detail">Secret</button>
+                  </div>
+                  <aside class="building-notes">
+                    <h3 id="buildingNoteTitle">Building Notes</h3>
+                    <p id="buildingNoteDetail">Choose a building in town to inspect its rooms.</p>
+                    <strong id="buildingNoteHook">Hook appears here.</strong>
+                  </aside>
+                </section>
+              </section>
+
+            </div>
+          </section>
+
+          <section class="bottom-panel panel">
+            <div class="location-heading">
+              <div class="banner">♞</div>
+              <div>
+                <h2 id="selectedName">Concord</h2>
+                <p id="selectedSubtitle">Woodland Capital</p>
+              </div>
+            </div>
+
+            <div class="subtabs">
+              <button class="active" data-tab="overview">Overview</button>
+              <button data-tab="locations">Buildings</button>
+              <button data-tab="npcs">NPCs</button>
+              <button data-tab="quests">Quests</button>
+            </div>
+
+            <div class="location-cards" id="locationCards"></div>
+          </section>
+
+          <aside class="action-panel">
+            <section class="quick-actions panel">
+              <h2>Quick Actions</h2>
+              <button data-action="dice">🎲 Roll Dice</button>
+              <button data-action="encounter">⚔ Create Encounter</button>
+              <button data-action="quest">▤ New Quest</button>
+              <button data-action="note">▣ Add Note</button>
+            </section>
+
+            <section class="dice-panel panel">
+              <h2>Dice Roller</h2>
+              <input id="diceFormula" value="1d20" aria-label="Dice formula" />
+              <div class="dice-result" id="diceResult">10</div>
+              <div class="dice-modifier" id="diceBreakdown">No modifier</div>
+              <button class="brass-button" id="rollDice">Roll</button>
+            </section>
+          </aside>
+
+          <section class="section-overlay hidden" id="sectionOverlay">
+            <div class="section-header">
+              <p id="sectionEyebrow">Campaign</p>
+              <h2 id="sectionTitle">Lore</h2>
+            </div>
+            <div class="section-grid" id="sectionGrid"></div>
+            <section class="scene-tab-workspace hidden" id="sceneTabWorkspace">
+              <div class="scene-panel scene-tab-panel">
+                <div class="scene-overview">
+                  <div class="scene-header">
+                    <div class="portrait tome"></div>
+                    <div>
+                      <p>Current Scene</p>
+                      <h2 id="selectedSceneName">Concord</h2>
+                      <span id="selectedSceneMeta">Woodland Capital</span>
+                    </div>
+                  </div>
+
+                  <p class="scene-summary" id="sceneSummary">Rangers argue with crown clerks while merchants wait beneath green banners.</p>
+
+                  <div class="scene-actions" aria-label="Scene tools">
+                    <button class="brass-button" id="generateNpc">NPC</button>
+                    <button class="brass-button" id="generateShop">Shop</button>
+                    <button class="brass-button" id="askAssistant">DM Beat</button>
+                    <button class="brass-button" id="createCharacter">Character</button>
+                  </div>
+                </div>
+
+                <div class="scene-output-grid">
+                  <article class="scene-output">
+                    <h3>NPC</h3>
+                    <div class="tool-output" id="npcOutput">Waiting for a scene...</div>
+                  </article>
+                  <article class="scene-output">
+                    <h3>Shop</h3>
+                    <div class="tool-output" id="shopOutput">No shop generated.</div>
+                  </article>
+                  <article class="scene-output">
+                    <h3>DM</h3>
+                    <div class="tool-output" id="assistantOutput">No advice requested.</div>
+                  </article>
+                  <article class="scene-output">
+                    <h3>Character</h3>
+                    <div class="tool-output" id="characterOutput">No character drafted.</div>
+                  </article>
+                </div>
+              </div>
+            </section>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
